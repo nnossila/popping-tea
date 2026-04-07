@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popping Tea</title>
+  <link rel="stylesheet" href="css/sobre.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+        <div class="logo">Popping Tea</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="sobre.html"class="active">Sobre</a></li>
+                <li><a href="menu.html">Cardápio</a></li>
+                <li><a href="contatos.html">Contatos</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <!-- <a href="#" onclick="trocarParaLogin(event)" class="sign-in">Entrar</a> -->
+            <a href="#" onclick="abrirPopupCadastro()" class="btn-order">FAZER PEDIDO</a>
+        </div>
+    </header>
+
+  <!-- Banner com vídeo -->
+  <section class="banner" id="sobre">
+    <video autoplay muted loop>
+      <source src="img/Epic Bubble Tea BROLL _ Teamate Spec AD.mp4" type="video/mp4" />
+      Seu navegador não suporta vídeo em HTML5.
+    </video>
+    <div class="text-container">
+      <h1>Bem-vindo ao Popping Tea!</h1>
+      <p>No Popping Tea, temos o prazer de compartilhar com você nossa paixão pelo universo do bubble tea. Criamos um ambiente vibrante, acolhedor e cheio de personalidade, pensado para oferecer uma experiência única, saborosa e inesquecível a todos os apaixonados por chá com bolhas.</p>
+    </div>
+  </section>
+ 
+  <!-- Sessão: Nossa História -->
+  <section class="historia" id="historia">
+    <div class="image">
+      <img src="img/img1.jpg" alt="Fachada da loja Popping Tea" />
+    </div>
+    <div class="content">
+      <h2>Nossa <span>História</span></h2>
+      <p>Desde o início, o Popping Tea nasceu com a ideia de trazer o universo do bubble tea para mais perto de todos. Nossa jornada começou com um pequeno espaço e um grande sonho: servir bebidas deliciosas, feitas com carinho e ingredientes selecionados.</p>
+      <p>Hoje, somos reconhecidos pelo nosso cuidado em cada detalhe, desde a escolha dos sabores até o atendimento acolhedor. Nossa missão é espalhar alegria através de cada copo!</p>
+    </div>
+  </section>
+ 
+  <!-- Sessão: Nosso Ambiente -->
+  <section class="ambiente" id="ambiente">
+    <h2>Nosso Ambiente</h2>
+    <div class="carousel" id="carousel">
+      <img src="img/ambiente 1.jpg" alt="Ambiente 1" />
+      <img src="img/ambiente 2.jpg" alt="Ambiente 2" />
+      <img src="img/ambiente 3.jpg" alt="Ambiente 3" />
+    </div>
+    <p>Nosso espaço foi pensado para ser confortável, alegre e instagramável. <br> Cada detalhe foi criado para que você aproveite sua bebida em um ambiente único e inspirador.</p>
+  </section>
+ 
+  <!-- Sessão: Popping -->
+  <section class="popping" id="popping">
+    <div class="imgpop">
+      <img src="img/popping.jpg" alt="Poppings coloridas" />
+    </div>
+    <div class="content">
+      <h2>Popping</h2>
+      <p>As bolhas popping (também conhecidas como popping boba) são pequenas esferas cheias de sabor que estouram suavemente na boca, liberando um líquido doce e refrescante. Diferente das tradicionais pérolas de tapioca, que têm uma textura mais firme e mastigável, as bolhas popping são mais leves, transparentes e oferecem uma explosão de sabor a cada mordida.
+São um dos ingredientes mais divertidos e populares do bubble tea, especialmente entre os que preferem uma experiência mais leve e frutada.</p>
+    </div>
+  </section>
+ 
+  <!-- Sessão: O Chá -->
+  <section class="cha" id="cha">
+    <div class="textocha">
+      <h2>O Chá</h2>
+      <p>O chá que dá origem ao nosso bubble tea é preparado na hora, com folhas selecionadas e água na temperatura ideal.
+Usamos chá verde, chá preto ou chá branco como base, sempre frescos, aromáticos e cheios de sabor. É essa infusão artesanal que garante a qualidade e o equilíbrio perfeito de cada bebida que servimos.</p>
+    </div>
+    <div class="imgcha">
+      <img src="img/o cha.jpg" alt="Ingredientes do chá" />
+    </div>
+  </section>
+ 
+  <!-- venha nos conhecer -->
+  <section class="conhecer" id="conhecer">
+    <h2>Venha nos conhecer!</h2>
+    <p>Estamos esperando você para experimentar um universo de sabores e boas energias</p>
+   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3601.8179716401182!2d-49.293530723804224!3d-25.477752977531367!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce35d8fd77e69%3A0x7e40791e81a1e36c!2sShopping%20Palladium!5e0!3m2!1spt-BR!2sbr!4v1754310156721!5m2!1spt-BR!2sbr"></iframe>
+  </section>
+
+  <div class="overlay" id="popupCadastro">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharCadastro()">×</button>
+            <h2>Cadastro</h2>
+            <form onsubmit="finalizarCadastro(event)">
+                <input type="text" placeholder="Nome completo" required />
+                <input type="email" placeholder="E-mail" required />
+                <input type="password" placeholder="Senha" required />
+                <input type="tel" placeholder="Telefone" required />
+                <button type="submit">Cadastrar</button>
+                <p class="link-login">Já tem conta? <a href="#" onclick="trocarParaLogin(event)">Entrar</a></p>
+            </form>
+        </div>
+    </div>
+
+   
+    <div class="overlay" id="popupLogin">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharLogin()">×</button>
+            <h2>Login</h2>
+            <form onsubmit="fazerLogin(event)">
+                <input type="text" placeholder="Nome completo" required />
+                <input type="email" placeholder="E-mail" required />
+                <input type="password" placeholder="Senha" required />
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+
+  
+ 
+  <!-- Rodapé -->
+  <footer>
+    © 2025 Popping Tea. Todos os direitos reservados.
+  </footer>
+ 
+  <!-- JavaScript para carrossel -->
+  <script>
+    const carousel = document.getElementById("carousel");
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+ 
+    carousel.addEventListener("mousedown", (e) => {
+      isDown = true;
+      carousel.classList.add("active");
+      startX = e.pageX - carousel.offsetLeft;
+      scrollLeft = carousel.scrollLeft;
+    });
+ 
+    carousel.addEventListener("mouseleave", () => {
+      isDown = false;
+      carousel.classList.remove("active");
+    });
+ 
+    carousel.addEventListener("mouseup", () => {
+      isDown = false;
+      carousel.classList.remove("active");
+    });
+ 
+    carousel.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - carousel.offsetLeft;
+      const walk = (x - startX) * 2; // Velocidade do scroll
+      carousel.scrollLeft = scrollLeft - walk;
+    });
+
+    function abrirPopupCadastro() {
+            document.getElementById("popupCadastro").style.display = "flex";
+        }
+
+        function fecharCadastro() {
+            document.getElementById("popupCadastro").style.display = "none";
+        }
+
+        function trocarParaLogin(event) {
+            event.preventDefault();
+            fecharCadastro();
+            document.getElementById("popupLogin").style.display = "flex";
+        }
+
+        function fecharLogin() {
+            document.getElementById("popupLogin").style.display = "none";
+        }
+
+        function finalizarCadastro(event) {
+            event.preventDefault();
+            alert("Cadastro concluído! Agora você será redirecionado para finalizar sua compra.");
+            fecharCadastro();
+        }
+
+        function fazerLogin(event) {
+            event.preventDefault();
+            alert("Login realizado com sucesso!");
+            fecharLogin();
+        }
+  </script>
+ 
+</body>
+</html>

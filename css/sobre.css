@@ -1,0 +1,395 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9f6eb;
+  color: #2e2e2e;
+  line-height: 1.5;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2e2e2e;
+  letter-spacing: -1px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 32px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #2e2e2e;
+  font-weight: 500;
+  font-size: 1.05rem;
+  transition: all 0.3s;
+}
+
+nav a:hover,
+nav a.active {
+  color: #cfa585;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sign-in {
+  font-weight: 500;
+  color: #2e2e2e;
+  text-decoration: none;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  transition: all 0.3s;
+}
+
+.sign-in:hover {
+  background-color: #f0f0f0;
+}
+
+.btn-order {
+  background-color: #6b4a3e;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(107, 74, 62, 0.3);
+}
+
+.btn-order:hover {
+  background-color: #cfa585;
+  transform: translateY(-2px);
+}
+
+/* Banner de vídeo */
+.banner {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+ 
+.banner video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index:0;
+}
+ 
+.banner .text-container {
+  position: absolute;
+  bottom: 25%;
+  left: 5%;
+  max-width: 600px;
+  color: #fff;
+  text-align: left;
+  padding: 20px;
+  border-radius: 8px;
+}
+ 
+.banner .text-container h1 {
+  font-size: 38px;
+  font-weight: 600;
+}
+ 
+.banner .text-container p {
+  font-size: 18px;
+  margin-top: 10px;
+}
+ 
+/* Seções base */
+section {
+  padding: 100px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+section h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+ 
+/* Sessão: Nossa História */
+.historia {
+  background-color: #fff;
+  flex-wrap: wrap;
+}
+ 
+.historia .image {
+  flex: 1;
+}
+ 
+.historia .image img {
+  max-width: 90%;
+  border-radius: 15px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+ 
+.historia .content {
+  flex: 1;
+  padding-left: 0;
+}
+ 
+.historia .content h2 {
+  font-size: 70px;
+}
+ 
+.historia .content h2 span {
+  color: #cfa585;
+}
+ 
+.content p {
+  font-size: 20px;
+  margin-top: 10px;
+  margin-right: 120px;
+  line-height: 1.7;
+}
+ 
+/* Sessão: Nosso Ambiente */
+.ambiente {
+  background-color: #dde5ed;
+  flex-direction: column;
+  text-align: center;
+}
+ 
+.ambiente .carousel {
+  margin: 20px 0;
+  display: flex;
+  overflow-x: auto;
+  gap: 40px;
+  scroll-snap-type: x mandatory;
+}
+ 
+.ambiente .carousel img {
+  width: 300px;
+  height: 350px;
+  object-fit: cover;
+  scroll-snap-align: center;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+ 
+/* Sessão: Popping */
+.popping {
+  background-color: #fdf8ee;
+}
+ 
+.popping .imgpop {
+  flex: 1;
+}
+
+.imgpop img{
+  width: 450px;
+  border-radius: 12px;
+  margin-left: 200px ;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+
+}
+ 
+.popping .content {
+  flex: 1;
+  padding-left: 40px;
+}
+ 
+.popping h2 {
+  color: #a5bdd6;
+  font-size: 60px;
+  margin-right: 240px;
+}
+
+ 
+/* Sessão: O Chá */
+.cha {
+  background-color: #a5bdd6;
+  color: white;
+}
+ 
+.cha .textocha {
+  flex: 1;
+  padding-right: 80px;
+}
+ 
+.cha .imgcha {
+  flex: 1;
+}
+
+.imgcha img {
+  max-width: 50%;
+  border-radius: 12px;
+  margin-left: 120px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+ 
+.cha h2{
+  font-size: 76px;
+}
+.textocha p{
+  font-size: 20px;
+}
+
+ 
+/* Sessão: Venha nos conhecer */
+.conhecer {
+  background-color: #fdf8ee;
+  flex-direction: column;
+  text-align: center;
+}
+ 
+.conhecer iframe {
+  margin-top: 20px;
+  width: 50%;
+  height: 500px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); 
+}
+ 
+/* Rodapé */
+footer {
+  background-color: #fdf8ee;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #2e2e2e;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-form {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.popup-form h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #6b4a3e;
+}
+
+.popup-form form input,
+.popup-form form button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.popup-form form button {
+  background-color: #cfa585;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.popup-form form button:hover {
+  background-color: #6b4a3e;
+}
+
+.popup-form .link-login {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.popup-form .link-login a {
+  color: #6b4a3e;
+  text-decoration: underline;
+}
+
+.fechar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+}
+
+.fechar:hover {
+  color: #cfa585;
+}
+ 
+/* Responsivo */
+@media (max-width: 768px) {
+  nav {
+    padding: 20px 30px;
+    flex-direction: column;
+  }
+ 
+  section {
+    flex-direction: column;
+    padding: 60px 20px;
+  }
+ 
+  .historia .content,
+  .popping .content,
+  .cha .content {
+    padding: 0;
+  }
+ 
+  .banner .text-container {
+    left: 5%;
+    top: 20%;
+    padding: 15px;
+    max-width: 90%;
+  }
+ 
+  .banner .text-container h1 {
+    font-size: 28px;
+  }
+ 
+  .banner .text-container p {
+    font-size: 16px;
+  }
+}
