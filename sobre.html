@@ -18,10 +18,6 @@
                 <li><a href="contatos.html">Contatos</a></li>
             </ul>
         </nav>
-        <div class="header-actions">
-            <!-- <a href="#" onclick="trocarParaLogin(event)" class="sign-in">Entrar</a> -->
-            <a href="#" onclick="abrirPopupCadastro()" class="btn-order">FAZER PEDIDO</a>
-        </div>
     </header>
 
   <!-- Banner com vídeo -->
@@ -158,36 +154,6 @@ Usamos chá verde, chá preto ou chá branco como base, sempre frescos, aromáti
       const walk = (x - startX) * 2; // Velocidade do scroll
       carousel.scrollLeft = scrollLeft - walk;
     });
-
-    function abrirPopupCadastro() {
-            document.getElementById("popupCadastro").style.display = "flex";
-        }
-
-        function fecharCadastro() {
-            document.getElementById("popupCadastro").style.display = "none";
-        }
-
-        function trocarParaLogin(event) {
-            event.preventDefault();
-            fecharCadastro();
-            document.getElementById("popupLogin").style.display = "flex";
-        }
-
-        function fecharLogin() {
-            document.getElementById("popupLogin").style.display = "none";
-        }
-
-        function finalizarCadastro(event) {
-            event.preventDefault();
-            alert("Cadastro concluído! Agora você será redirecionado para finalizar sua compra.");
-            fecharCadastro();
-        }
-
-        function fazerLogin(event) {
-            event.preventDefault();
-            alert("Login realizado com sucesso!");
-            fecharLogin();
-        }
   </script>
  
 </body>

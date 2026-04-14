@@ -449,6 +449,25 @@ nav a.active {
     justify-content: center;
 }
 
+.area-pagamento {
+  display: none;
+  margin-top: 20px;
+}
+ 
+.metodos {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+ 
+.metodos button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #eee;
+  cursor: pointer;
+}
+
 /* Responsivo */
 @media (max-width: 768px) {
   header {

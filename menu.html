@@ -216,10 +216,10 @@
     <button class="fechar" onclick="fecharCadastro()">×</button>
     <h2>Cadastro</h2>
     <form onsubmit="finalizarCadastro(event)">
-      <input type="text" placeholder="Nome completo" required />
-      <input type="email" placeholder="E-mail" required />
-      <input type="password" placeholder="Senha (Letras, números e símbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" required />
-      <input type="tel" placeholder="Telefone" maxlength="11" pattern="[0-9]{11}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required />
+      <input type="text" placeholder="Nome" name="nome" required />
+      <input type="email" placeholder="E-mail" name="email" required />
+      <input type="password" placeholder="Senha (Letras, números e símbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" name="senha" required />
+      <input type="tel" placeholder="Telefone" maxlength="11" pattern="[0-9]{11}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="telefone" required />
       <button type="submit">Cadastrar</button>
       <p class="link-login">Já tem conta? <a href="#" onclick="trocarParaLogin(event)">Entrar</a></p>
     </form>
@@ -231,9 +231,9 @@
     <button class="fechar" onclick="fecharLogin()">×</button>
     <h2>Login</h2>
     <form onsubmit="fazerLogin(event)">
-      <input type="text" placeholder="Nome completo" pattern="[A-Za-zÀ-ú\s]+" required />
-      <input type="email" placeholder="E-mail" required />
-      <input type="password" placeholder="Senha (Letras, números e simbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" required />
+      <input type="text" placeholder="Nome" pattern="[A-Za-zÀ-ú\s]+" name="nome" required />
+      <input type="email" placeholder="E-mail" name="email" required />
+      <input type="password" placeholder="Senha (Letras, números e simbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" name="senha" required />
       <button type="submit">Entrar</button>
     </form>
   </div>
@@ -271,27 +271,73 @@
   <h2>Endereço</h2>
  
   <form onsubmit="salvarEndereco(event)">
-   <input type="text" placeholder="CEP" maxlength="8" pattern="[0-9]{8}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
-   <input type="text" placeholder="Rua" required />
-   <input type="text" placeholder="Número" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required />
-   <input type="text" placeholder="Bairro" required />
-   <input type="text" placeholder="Cidade" required />
-   <input type="text" placeholder="Estado" required />
-   <button type="submit">Salvar Endereço</button>
+   <input type="text" id="cep" placeholder="CEP" maxlength="8"
+oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+onblur="buscarCEP()" name="cep" required/>
+ 
+<input type="text" id="rua" placeholder="Rua" name="rua" required/>
+<input type="text" placeholder="Número" name="numero" required/>
+ 
+<input type="text" id="bairro" placeholder="Bairro" name="bairro" required/>
+<input type="text" id="cidade" placeholder="Cidade" name="cidade" required/>
+<input type="text" id="estado" placeholder="Estado" name="estado" required/>
+<button type="submit">Salvar Endereço</button>
   </form>
 </div>
 </div>
  
 <!-- Pagamento -->
+ <select name="pagamento">
+    <option value="pix">Pix</option>
+    <option value="cartao">Cartão</option>
+    <option value="dinheiro">Dinheiro</option>
+</select>
 <div class="overlay" id="popupPagamento">
-<div class="popup-form">
-  <button class="fechar" onclick="fecharPagamento()">×</button>
-  <h2>Forma de Pagamento</h2>
+  <div class="popup-form">
  
-  <button onclick="selecionarPagamento('pix')">PIX</button>
-  <button onclick="selecionarPagamento('dinheiro')">Dinheiro</button>
-  <button onclick="selecionarPagamento('cartao')">Cartão</button>
-</div>
+    <button class="fechar" onclick="fecharPagamento()">×</button>
+    <h2>Pagamento</h2>
+ 
+    <!-- BOTÕES -->
+    <div class="metodos">
+      <button onclick="selecionarPagamento('pix')">PIX</button>
+      <button onclick="selecionarPagamento('cartao')">Cartão</button>
+      <button onclick="selecionarPagamento('dinheiro')">Dinheiro</button>
+    </div>
+ 
+    <!-- PIX -->
+    <div id="area-pix" class="area-pagamento">
+      <h3>Escaneie o QR Code</h3>
+      <img id="qrcode-pix" src="" style="width:200px; margin-top:15px;">
+      <p style="margin-top:10px; font-size:0.9rem; color:#666;">
+        Aguardando pagamento...
+      </p>
+    </div>
+ 
+    <!-- CARTÃO -->
+    <div id="area-cartao" class="area-pagamento">
+ 
+      <select>
+        <option value="">Selecione</option>
+        <option>Crédito</option>
+        <option>Débito</option>
+      </select>
+ 
+      <input type="text" placeholder="Número do cartão" maxlength="16" pattern="[0-9]*">
+      <input type="text" placeholder="Nome no cartão">
+      <input type="text" placeholder="Validade (MM/AA)" maxlength="5">
+      <input type="text" placeholder="CVV" maxlength="3" pattern="[0-9]*">
+ 
+      <button onclick="finalizarTudo()">Pagar</button>
+    </div>
+ 
+    <!-- DINHEIRO -->
+    <div id="area-dinheiro" class="area-pagamento">
+      <p>Pagamento em dinheiro na entrega</p>
+      <button onclick="finalizarTudo()">Confirmar Pedido</button>
+    </div>
+ 
+  </div>
 </div>
  
 <!-- Finalização -->
@@ -305,6 +351,23 @@
 </div>
 </div>
 
+<form id="formFinal" method="POST" action="salvar_tudo.php" style="display:none;">
+ 
+<input name="nome" id="final_nome">
+<input name="email" id="final_email">
+<input name="senha" id="final_senha">
+<input name="telefone" id="final_telefone">
+ 
+<input name="cep" id="final_cep">
+<input name="rua" id="final_rua">
+<input name="numero" id="final_numero">
+<input name="bairro" id="final_bairro">
+<input name="cidade" id="final_cidade">
+<input name="estado" id="final_estado">
+ 
+<input name="pagamento" id="final_pagamento">
+ 
+</form>
     <script>
     let usuarioLogado = false;
     let carrinho = [];
@@ -464,31 +527,110 @@ fecharEndereco();
  
 document.getElementById("popupPagamento").style.display = "flex";
 }
+
+function buscarCEP() {
+    let cep = document.getElementById("cep").value;
+ 
+    if (cep.length !== 8) {
+        alert("CEP inválido");
+        return;
+    }
+ 
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(res => res.json())
+        .then(dados => {
+ 
+            if (dados.erro) {
+                alert("CEP não encontrado");
+                return;
+            }
+ 
+            document.getElementById("rua").value = dados.logradouro;
+            document.getElementById("bairro").value = dados.bairro;
+            document.getElementById("cidade").value = dados.localidade;
+            document.getElementById("estado").value = dados.uf;
+        })
+        .catch(() => {
+            alert("Erro ao buscar CEP");
+        });
+}
  
 // Forma de pagamento
- 
 function fecharPagamento() {
-document.getElementById("popupPagamento").style.display = "none";
+  document.getElementById("popupPagamento").style.display = "none";
 }
  
+// CONTROLE TOTAL DOS MÉTODOS
 function selecionarPagamento(tipo) {
-fecharPagamento();
  
-if (tipo === "pix") {
-  alert("QR Code PIX gerado!");
-} else if (tipo === "cartao") {
-  alert("Redirecionando para pagamento no cartão...");
+  document.getElementById("area-pix").style.display = "none";
+  document.getElementById("area-cartao").style.display = "none";
+  document.getElementById("area-dinheiro").style.display = "none";
+
+ 
+  // PIX
+  if (tipo === "pix") {
+    document.getElementById("area-pix").style.display = "block";
+ 
+    const valor = document.getElementById("valor-total").textContent;
+ 
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Pagamento-PoppingTea-${valor}`;
+ 
+    document.getElementById("qrcode-pix").src = qrUrl;
+  }
+ 
+  // CARTÃO
+  if (tipo === "cartao") {
+    document.getElementById("area-cartao").style.display = "block";
+  }
+ 
+  // DINHEIRO
+  if (tipo === "dinheiro") {
+    document.getElementById("area-dinheiro").style.display = "block";
+  }
+
+  let pagamentoSelecionado = "";
+ 
+function selecionarPagamento(tipo){
+    pagamentoSelecionado = tipo;
 }
- 
-finalizarTudo();
 }
  
 // Finalização
  
-function finalizarTudo() {
-document.getElementById("popupFinalizado").style.display = "flex";
-carrinho = [];
-atualizarCarrinho();
+function finalizarTudo(){
+ 
+    // CLIENTE
+    document.getElementById("final_nome").value =
+        document.querySelector('#popupCadastro input[name="nome"]').value;
+ 
+    document.getElementById("final_email").value =
+        document.querySelector('#popupCadastro input[name="email"]').value;
+ 
+    document.getElementById("final_senha").value =
+        document.querySelector('#popupCadastro input[name="senha"]').value;
+ 
+    document.getElementById("final_telefone").value =
+        document.querySelector('#popupCadastro input[name="telefone"]').value;
+ 
+ 
+    // ENDEREÇO
+    document.getElementById("final_cep").value = document.getElementById("cep").value;
+    document.getElementById("final_rua").value = document.getElementById("rua").value;
+    document.getElementById("final_bairro").value = document.getElementById("bairro").value;
+    document.getElementById("final_cidade").value = document.getElementById("cidade").value;
+    document.getElementById("final_estado").value = document.getElementById("estado").value;
+ 
+    document.getElementById("final_numero").value =
+        document.querySelector('#popupEndereco input[placeholder="Número"]').value;
+ 
+ 
+    // PAGAMENTO
+    document.getElementById("final_pagamento").value = pagamentoSelecionado;
+ 
+ 
+    // ENVIA PRO PHP
+    document.getElementById("formFinal").submit();
 }
  
 function fecharFinalizado() {
@@ -524,6 +666,16 @@ alert("Seu código: " + codigo + " (mostre no balcão)");
     function fecharIngredientes() {
       document.getElementById("popupIngredientes").style.display = "none";
     }
+    function gerarQRCode() {
+        const area = document.getElementById("qrcode");
+        area.innerHTML = "";
+        new QRCode(area, {
+            text: "Pagamento Popping Tea - R$ XX,XX",
+            width: 150,
+            height: 150
+        });
+    }
+    
   </script>
 </body>
 </html>
