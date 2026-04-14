@@ -15,10 +15,10 @@
         <div class="logo">Popping Tea</div>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="sobre.html">Sobre</a></li>
-                <li><a href="menu.html" class="active">Cardápio</a></li>
-                <li><a href="contatos.html">Contatos</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="sobre.php">Sobre</a></li>
+                <li><a href="menu.php" class="active">Cardápio</a></li>
+                <li><a href="contatos.php">Contatos</a></li>
             </ul>
         </nav>
         <div class="header-actions">
@@ -443,94 +443,7 @@ onblur="buscarCEP()" name="cep" required/>
       document.getElementById("carrinhoOverlay").style.display = "none";
     }
  
-    function abrirPopupCadastro() {
-        if (!usuarioLogado) {
-            document.getElementById("popupCadastro").style.display = "flex";
-        } else {
-            document.getElementById("popupConfirmar").style.display = "flex";
-        }
-    }
- 
-    function fecharCadastro() {
-      document.getElementById("popupCadastro").style.display = "none";
-    }   
- 
-    function trocarParaLogin(event) {
-      event.preventDefault();
-      fecharCadastro();
-      document.getElementById("popupLogin").style.display = "flex";
-    }
-    function trocarParaCadastro(event) {
-        event.preventDefault();
-        fecharLogin();
-        document.getElementById("popupCadastro").style.display = "flex";
-    }
- 
-    function fecharLogin() {
-      document.getElementById("popupLogin").style.display = "none";
-    }
 
-    function finalizarCadastro(event) {
-        event.preventDefault();
-        
-        const form = document.querySelector('#popupCadastro form');
-        const dados = new FormData(form);
-        
-        fetch('formCadastro.php', {
-            method: 'POST',
-            body: dados
-        })
-        .then(response => response.json())
-        .then(resultado => {
-            if (resultado.sucesso) {
-                alert(resultado.mensagem);
-                usuarioLogado = true;
-                fecharCadastro();
-                abrirConfirmarPedido();
-            } else {
-                let msgDiv = document.querySelector('#popupCadastro .mensagem-ajax');
-                if (!msgDiv) {
-                    msgDiv = document.createElement('div');
-                    msgDiv.className = 'erro';
-                    form.prepend(msgDiv);
-                }
-                msgDiv.innerText = resultado.mensagem;
-            }
-        })
-        .catch(erro => {
-            console.error('Erro no fetch:', erro);
-            alert('Erro de conexão. Tente novamente.');
-        });
-    }
-
-    const telefoneInput = document.getElementById('telefone');
-    telefoneInput.addEventListener('input', function () {
-        let valor = this.value.replace(/\D/g, '');
-
-        if (valor.length > 11) {
-            valor = valor.slice(0, 11);
-        }
-
-        if (valor.length > 0) {
-            valor = '(' + valor;
-        }
-        if (valor.length > 2) {
-            valor = valor.slice(0, 3) + ') ' + valor.slice(3);
-        }
-        if (valor.length > 10) {
-            valor = valor.slice(0, 10) + '-' + valor.slice(10);
-        }
-
-        this.value = valor;
-    });
-
-    function fazerLogin(event) {
-        event.preventDefault();
-        alert("Login realizado!");
-        usuarioLogado = true;
-        fecharLogin();
-        abrirConfirmarPedido();
-    }
 
     function abrirConfirmarPedido() {
         const lista = document.getElementById("resumo-pedido");
@@ -670,43 +583,6 @@ function selecionarPagamento(tipo){
 }
 }
  
-// Finalização
- 
-/* function finalizarTudo(){
- 
-    // CLIENTE
-    document.getElementById("final_nome").value =
-        document.querySelector('#popupCadastro input[name="nome"]').value;
- 
-    document.getElementById("final_email").value =
-        document.querySelector('#popupCadastro input[name="email"]').value;
- 
-    document.getElementById("final_senha").value =
-        document.querySelector('#popupCadastro input[name="senha"]').value;
- 
-    document.getElementById("final_telefone").value =
-        document.querySelector('#popupCadastro input[name="telefone"]').value;
- 
- 
-    // ENDEREÇO
-    document.getElementById("final_cep").value = document.getElementById("cep").value;
-    document.getElementById("final_rua").value = document.getElementById("rua").value;
-    document.getElementById("final_bairro").value = document.getElementById("bairro").value;
-    document.getElementById("final_cidade").value = document.getElementById("cidade").value;
-    document.getElementById("final_estado").value = document.getElementById("estado").value;
- 
-    document.getElementById("final_numero").value =
-        document.querySelector('#popupEndereco input[placeholder="Número"]').value;
- 
- 
-    // PAGAMENTO
-    document.getElementById("final_pagamento").value = pagamentoSelecionado;
- 
- 
-    // ENVIA PRO PHP
-    document.getElementById("formFinal").submit();
-} */
- 
 function fecharFinalizado() {
 document.getElementById("popupFinalizado").style.display = "none";
 }
@@ -750,6 +626,16 @@ alert("Seu código: " + codigo + " (mostre no balcão)");
         });
     }
     
+    document.addEventListener("DOMContentLoaded", function() {
+        if (sessionStorage.getItem('abrirPopupConfirmarPedido') === 'true') {
+            const popupConfirmar = document.getElementById("popupConfirmar");
+            if (popupConfirmar) {
+                popupConfirmar.style.display = "flex";
+            }
+            sessionStorage.removeItem('abrirPopupConfirmarPedido');
+        }
+    });
+
   </script>
 </body>
 </html>

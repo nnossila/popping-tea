@@ -15,7 +15,7 @@ class Cadastro {
     ) {
         $this->nome     = $nome;
         $this->email    = $email;
-        $this->senha    = password_hash($senha, PASSWORD_ARGON2ID);
+        $this->senha    = password_hash($senha, PASSWORD_DEFAULT); // mais compatível
         $this->telefone = $telefone;
     }
 
@@ -32,9 +32,11 @@ class Cadastro {
 
         try {
             $stmt->execute();
+            $id = $pdo->lastInsertId(); // obtém o ID gerado
             return (object) [
                 'sucesso' => true,
-                'mensagem' => 'Cadastro realizado com sucesso!'
+                'mensagem' => 'Cadastro realizado com sucesso!',
+                'id' => $id
             ];
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
@@ -51,7 +53,19 @@ class Cadastro {
         }
     }
 
-
-
+    public static function buscarPorEmail($email) {
+        try {
+            $pdo = Conexao::conectar();
+            $sql = "SELECT * FROM cliente WHERE email_cliente = :email";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(":email", $email);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            // Em produção, logue o erro; aqui retornamos null para não quebrar o JSON
+            error_log('Erro no buscarPorEmail: ' . $e->getMessage());
+            return null;
+        }
+    }
 }
 ?>
