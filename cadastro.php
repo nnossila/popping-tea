@@ -15,7 +15,7 @@ class Cadastro {
     ) {
         $this->nome     = $nome;
         $this->email    = $email;
-        $this->senha    = password_hash($senha, PASSWORD_DEFAULT); // mais compatível
+        $this->senha    = password_hash($senha, PASSWORD_DEFAULT);
         $this->telefone = $telefone;
     }
 
@@ -32,7 +32,7 @@ class Cadastro {
 
         try {
             $stmt->execute();
-            $id = $pdo->lastInsertId(); // obtém o ID gerado
+            $id = $pdo->lastInsertId();
             return (object) [
                 'sucesso' => true,
                 'mensagem' => 'Cadastro realizado com sucesso!',
@@ -62,7 +62,6 @@ class Cadastro {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
-            // Em produção, logue o erro; aqui retornamos null para não quebrar o JSON
             error_log('Erro no buscarPorEmail: ' . $e->getMessage());
             return null;
         }

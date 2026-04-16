@@ -20,8 +20,9 @@
             </ul>
         </nav>
         <div class="header-actions">
+            <a href="menu.php#cardapio"  class="btn-order">FAZER PEDIDO</a>
+            <p class="login"><a onclick="trocarParaLogin(event)">Login</a></p>
             <p class="logout"><a href="logout.php">Logout</a></p>
-            <a href="#" onclick="abrirPopupCadastro()" class="btn-order">FAZER PEDIDO</a>
         </div>
     </header>
 

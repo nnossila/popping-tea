@@ -1,16 +1,23 @@
+<?php
+session_start();
+require_once "endereco.php";
+
+$enderecos = [];
+if (isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado']) {
+    $cliente_id = $_SESSION['usuario_id'];
+    $enderecos = Endereco::buscarPorCliente($cliente_id);
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popping Tea</title>
+    <title>Popping Tea - Cardápio</title>
     <link rel="stylesheet" href="css/menu.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
 </head>
 <body>
-
-    <!-- HEADER -->
     <header>
         <div class="logo">Popping Tea</div>
         <nav>
@@ -22,23 +29,24 @@
             </ul>
         </nav>
         <div class="header-actions">
-            <!-- <a href="#" onclick="trocarParaLogin(event)" class="sign-in">Entrar</a> -->
-            <a href="#" onclick="abrirPopupCadastro()" class="btn-order">FAZER PEDIDO</a>
+            <a href="#" onclick="finalizarCompra()" class="btn-order">FAZER PEDIDO</a>
+            <p class="login"><a onclick="trocarParaLogin(event)">Login</a></p>
+            <p class="logout"><a href="logout.php">Logout</a></p>
         </div>
     </header>
 
-    
+    <?php include "popup_cadastro_login.php"; ?>
+
     <section class="hero">
         <div class="hero-content">
             <div class="hero-image-container">
                 <img src="img/baunilha.jpg" alt="Tradicional Baunilha - Destaque">
             </div>
-
             <div class="hero-text">
                 <h1>Fresco, com bolinhas,<br>feito com carinho.</h1>
                 <div class="featured-name">BAUNILHA</div>
                 <p class="featured-desc">
-                    Mate suave com baunilha natural, leite vegetal e nossas bolinhas popping. 
+                    Mate suave com baunilha natural, leite vegetal e nossas bolinhas popping.
                     Aromático, cremoso e irresistivelmente doce.
                 </p>
                 <p style="margin-top: 20px; font-size: 0.95rem; color: #666;">
@@ -48,9 +56,7 @@
         </div>
     </section>
 
-    <!-- CARDÁPIO -->
-    <main class="cardapio">
-
+    <main class="cardapio" id="cardapio">
         <!-- YAKULT -->
         <section>
             <h2>Yakult <span class="preco">R$19,90</span></h2>
@@ -65,7 +71,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="produto">
                     <img src="img/cranberry.jpg" alt="Yakult Cramberry" onclick="mostrarIngredientes('yakult-cramberry')">
                     <div class="produto-info">
@@ -77,7 +82,6 @@
                     </div>
                     <span class="badge badge-popular">POPULAR</span>
                 </div>
-
                 <div class="produto">
                     <img src="img/morango.jpg" alt="Yakult Morango" onclick="mostrarIngredientes('yakult-morango')">
                     <div class="produto-info">
@@ -88,7 +92,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="produto">
                     <img src="img/maca verde.jpg" alt="Yakult Maçã Verde" onclick="mostrarIngredientes('yakult-maca')">
                     <div class="produto-info">
@@ -116,7 +119,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="produto">
                     <img src="img/tiger.jpg" alt="Tiger Mate" onclick="mostrarIngredientes('tradicional-tiger')">
                     <div class="produto-info">
@@ -127,7 +129,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="produto">
                     <img src="img/baunilha.jpg" alt="Vanilla Mate" onclick="mostrarIngredientes('tradicional-vanilla')">
                     <div class="produto-info">
@@ -156,7 +157,6 @@
                     </div>
                     <span class="badge badge-popular">POPULAR</span>
                 </div>
-
                 <div class="produto">
                     <img src="img/oreo.jpg" alt="Chocolate Branco com Oreo" onclick="mostrarIngredientes('frozen-oreo')">
                     <div class="produto-info">
@@ -167,7 +167,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="produto">
                     <img src="img/cafe com oreo.jpg" alt="Café com Oreo" onclick="mostrarIngredientes('frozen-cafe')">
                     <div class="produto-info">
@@ -181,461 +180,455 @@
             </div>
         </section>
 
-        
         <div class="finalizar">
-    <div class="icone-carrinho" onclick="abrirCarrinho()">
-      🛒 <span id="contador-carrinho">0</span>
+            <div class="icone-carrinho" onclick="abrirCarrinho()">
+                🛒 <span id="contador-carrinho">0</span>
+            </div>
+            <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar compra</button>
+        </div>
+    </main>
+
+    <!-- Pop-ups -->
+    <div class="overlay" id="carrinhoOverlay">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharCarrinho()">×</button>
+            <h2>Itens no Carrinho</h2>
+            <ul id="lista-carrinho"></ul>
+            <p id="carrinho-vazio" style="text-align:center; color: #888;">Seu carrinho está vazio.</p>
+            <p id="valor-total" style="font-weight:bold; margin-top: 1rem; text-align: center;"></p>
+        </div>
     </div>
-    <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar compra</button>
-  </div>
-</main>
- 
-<!-- Pop-up Carrinho -->
-<div class="overlay" id="carrinhoOverlay">
-    <div class="popup-form">
-      <button class="fechar" onclick="fecharCarrinho()">×</button>
-      <h2>Itens no Carrinho</h2>
-      <ul id="lista-carrinho"></ul>
-      <p id="carrinho-vazio" style="text-align:center; color: #888;">Seu carrinho está vazio.</p>
-      <p id="valor-total" style="font-weight:bold; margin-top: 1rem; text-align: center;"></p>
+
+    <div class="overlay" id="popupIngredientes">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharIngredientes()">×</button>
+            <h2>Ingredientes</h2>
+            <p id="texto-ingredientes"></p>
+        </div>
     </div>
-  </div>
- 
-<!-- Pop-up Ingredientes -->
-<div class="overlay" id="popupIngredientes">
-  <div class="popup-form">
-    <button class="fechar" onclick="fecharIngredientes()">×</button>
-    <h2>Ingredientes</h2>
-    <p id="texto-ingredientes"></p>
-  </div>
-</div>
- 
-<!-- Cadastro -->
-<div class="overlay" id="popupCadastro">
-  <div class="popup-form">
-    <button class="fechar" onclick="fecharCadastro()">×</button>
-    <h2>Cadastro</h2>
-    <?php
-    if (isset($_SESSION['resultado_cadastro'])) {
-        $res = $_SESSION['resultado_cadastro'];
-        $classe = $res->sucesso ? 'sucesso' : 'erro';
-        echo "<div class='$classe'>{$res->mensagem}</div>";
-        unset($_SESSION['resultado_cadastro']);
-    }
-    ?>
-    <form method="POST" action="formCadastro.php" onsubmit="finalizarCadastro(event)">
-      <input type="text" placeholder="Nome" name="nome" id="nome" required />
-      <input type="email" placeholder="E-mail" name="email" id="email" required />
-      <input type="password" placeholder="Senha (Letras, números e símbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" name="senha" id="senha" required />
-        <ul style="font-size: 12px; padding-left: 20px">
-            <li>Pelo menos 1 Letra Maiscúla</li>
-            <li>Pelo menos 1 Letra Minuscúla</li>
-            <li>Pelo menos 1 caractere númerico</li>
-            <li>Pelo menos 1 caractere especial (ex: @ | # | &)</li>
-        </ul>
-      <input type="tel" placeholder="Telefone" maxlength="15" name="telefone" id="telefone" required />
-      <button type="submit">Cadastrar</button>
-      <p class="link-login">Já tem conta? <a href="#" onclick="trocarParaLogin(event)">Entrar</a></p>
+
+    <div class="overlay" id="popupConfirmar">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharConfirmar()">×</button>
+            <h2>Confirmar Pedido</h2>
+            <ul id="resumo-pedido"></ul>
+            <p id="total-confirmar"></p>
+            <button onclick="irParaConsumo()">Continuar</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="popupConsumo">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharConsumo()">×</button>
+            <h2>Forma de Consumo</h2>
+            <button onclick="selecionarConsumo('delivery')">Delivery</button>
+            <button onclick="selecionarConsumo('local')">Consumir no local</button>
+            <button onclick="selecionarConsumo('viagem')">Levar para viagem</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="popupEndereco">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharEndereco()">×</button>
+            <h2>Endereço</h2>
+            <!-- Formulário SEM action, será manipulado pelo JavaScript -->
+            <form id="form-endereco">
+                <input type="hidden" name="action" id="action" value="save">
+                <?php if (!empty($enderecos)): ?>
+                    <?php $ultimo = $enderecos[0]; ?>
+                    <div class="endereco-buttons" data-id="<?= $ultimo['id'] ?>" data-cep="<?= htmlspecialchars($ultimo['CEP'], ENT_QUOTES) ?>" data-rua="<?= htmlspecialchars($ultimo['logradouro'], ENT_QUOTES) ?>" data-numero="<?= htmlspecialchars($ultimo['num_logradouro'], ENT_QUOTES) ?>" data-bairro="<?= htmlspecialchars($ultimo['bairro'], ENT_QUOTES) ?>" data-cidade="<?= htmlspecialchars($ultimo['cidade'], ENT_QUOTES) ?>" data-estado="<?= htmlspecialchars($ultimo['estado'], ENT_QUOTES) ?>">
+                        <button type="button" class="endereco-btn" onclick="usarEnderecoSalvo()">Endereço Salvo</button>
+                        <button type="button" class="endereco-btn" onclick="editarEnderecoSalvo()">📝</button>
+                        <button type="button" class="endereco-btn endereco-btn-delete" onclick="excluirEndereco(<?= $ultimo['id'] ?>)">🗑️</button>
+                    </div>
+                <?php else: ?>
+                    <p style="margin-bottom: 16px; color: #444;">Nenhum endereço salvo.</p>
+                <?php endif; ?>
+                <input type="hidden" name="endereco_id" id="endereco_id" value="">
+                <input type="text" id="cep" placeholder="CEP" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')" onblur="buscarCEP()" name="cep" required/>
+                <input type="text" id="rua" placeholder="Rua" name="rua" required/>
+                <input type="text" id="numero" placeholder="Número" name="numero" required/>
+                <input type="text" id="bairro" placeholder="Bairro" name="bairro" required/>
+                <input type="text" id="cidade" placeholder="Cidade" name="cidade" required/>
+                <input type="text" id="estado" placeholder="Estado" name="estado" required/>
+                <button type="submit" id="submit-btn">Continuar para Pagamento</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="overlay" id="popupPagamento">
+        <div class="popup-form">
+            <button class="fechar" onclick="fecharPagamento()">×</button>
+            <h2>Pagamento</h2>
+            <div class="metodos">
+                <button onclick="selecionarPagamento('pix')">PIX</button>
+                <button onclick="selecionarPagamento('cartao')">Cartão</button>
+                <button onclick="selecionarPagamento('dinheiro')">Dinheiro</button>
+            </div>
+            <div id="area-pix" class="area-pagamento" style="display:none;">
+                <h3>Escaneie o QR Code</h3>
+                <img id="qrcode-pix" src="" style="width:200px; margin-top:15px;">
+                <p style="margin-top:10px; font-size:0.9rem; color:#666;">Aguardando pagamento...</p>
+                <button onclick="finalizarPedido()">Confirmar Pagamento</button>
+            </div>
+            <div id="area-cartao" class="area-pagamento" style="display:none;">
+                <select id="cartao-tipo">
+                    <option>Crédito</option>
+                    <option>Débito</option>
+                </select>
+                <input type="text" id="cartao-numero" placeholder="Número do cartão" maxlength="16">
+                <input type="text" id="cartao-nome" placeholder="Nome no cartão">
+                <input type="text" id="cartao-validade" placeholder="Validade (MM/AA)" maxlength="5">
+                <input type="text" id="cartao-cvv" placeholder="CVV" maxlength="3">
+                <button onclick="finalizarPedido()">Pagar</button>
+            </div>
+            <div id="area-dinheiro" class="area-pagamento" style="display:none;">
+                <p>Pagamento em dinheiro na entrega</p>
+                <button onclick="finalizarPedido()">Confirmar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="popupFinalizado">
+        <div class="popup-form">
+            <h2>Pedido Finalizado 🎉</h2>
+            <p>Seu pedido foi enviado com sucesso!</p>
+            <p>Entraremos em contato por telefone ou e-mail.</p>
+            <button onclick="fecharFinalizado()">Fechar</button>
+        </div>
+    </div>
+
+    <form id="formFinal" method="POST" action="salvar_tudo.php" style="display:none;">
+        <!-- campos ocultos -->
     </form>
-    <style>
-        .erro { background: #f8d7da; color: #721c24; border-radius: 8px; padding: 10px; margin: 10px 0; }
-    </style>
-  </div>
-</div>
- <!-- Login -->
-<div class="overlay" id="popupLogin">
-  <div class="popup-form">
-    <button class="fechar" onclick="fecharLogin()">×</button>
-    <h2>Login</h2>
-    <form onsubmit="fazerLogin(event)">
-      <input type="text" placeholder="Nome" pattern="[A-Za-zÀ-ú\s]+" name="nome" required />
-      <input type="email" placeholder="E-mail" name="email" required />
-      <input type="password" placeholder="Senha (Letras, números e simbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" name="senha" required />
-      <button type="submit">Entrar</button>
-      <p class="link-login">Não tem uma conta? <a href="#" onclick="trocarParaLogin(event)">Cadastro</a></p>
-    </form>
-  </div>
-</div>
 
-<!-- Confirmar pedido -->
-<div class="overlay" id="popupConfirmar">
-<div class="popup-form">
-  <button class="fechar" onclick="fecharConfirmar()">×</button>
-  <h2>Confirmar Pedido</h2>
- 
-  <ul id="resumo-pedido"></ul>
-  <p id="total-confirmar"></p>
- 
-  <button onclick="irParaConsumo()">Continuar</button>
-</div>
-</div>
+    <script>
+        let usuarioLogado = <?= isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] ? 'true' : 'false' ?>;
+        let carrinho = [];
+        let tipoConsumo = "";
+        let metodoPagamento = "";
+        let enderecoSelecionado = null;
 
-<!-- Forma de consumo -->
-<div class="overlay" id="popupConsumo">
-<div class="popup-form">
-  <button class="fechar" onclick="fecharConsumo()">×</button>
-  <h2>Forma de Consumo</h2>
- 
-  <button onclick="selecionarConsumo('delivery')">Delivery</button>
-  <button onclick="selecionarConsumo('local')">Consumir no local</button>
-  <button onclick="selecionarConsumo('viagem')">Levar para viagem</button>
-</div>
-</div>
- 
-<!-- Endereço -->
-<div class="overlay" id="popupEndereco">
-<div class="popup-form">
-  <button class="fechar" onclick="fecharEndereco()">×</button>
-  <h2>Endereço</h2>
- 
-  <form onsubmit="salvarEndereco(event)">
-   <input type="text" id="cep" placeholder="CEP" maxlength="8"
-oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-onblur="buscarCEP()" name="cep" required/>
- 
-<input type="text" id="rua" placeholder="Rua" name="rua" required/>
-<input type="text" placeholder="Número" name="numero" required/>
- 
-<input type="text" id="bairro" placeholder="Bairro" name="bairro" required/>
-<input type="text" id="cidade" placeholder="Cidade" name="cidade" required/>
-<input type="text" id="estado" placeholder="Estado" name="estado" required/>
-<button type="submit">Salvar Endereço</button>
-  </form>
-</div>
-</div>
- 
-<!-- Pagamento -->
- <select name="pagamento">
-    <option value="pix">Pix</option>
-    <option value="cartao">Cartão</option>
-    <option value="dinheiro">Dinheiro</option>
-</select>
-<div class="overlay" id="popupPagamento">
-  <div class="popup-form">
- 
-    <button class="fechar" onclick="fecharPagamento()">×</button>
-    <h2>Pagamento</h2>
- 
-    <!-- BOTÕES -->
-    <div class="metodos">
-      <button onclick="selecionarPagamento('pix')">PIX</button>
-      <button onclick="selecionarPagamento('cartao')">Cartão</button>
-      <button onclick="selecionarPagamento('dinheiro')">Dinheiro</button>
-    </div>
- 
-    <!-- PIX -->
-    <div id="area-pix" class="area-pagamento">
-      <h3>Escaneie o QR Code</h3>
-      <img id="qrcode-pix" src="" style="width:200px; margin-top:15px;">
-      <p style="margin-top:10px; font-size:0.9rem; color:#666;">
-        Aguardando pagamento...
-      </p>
-    </div>
- 
-    <!-- CARTÃO -->
-    <div id="area-cartao" class="area-pagamento">
- 
-      <select>
-        <option value="">Selecione</option>
-        <option>Crédito</option>
-        <option>Débito</option>
-      </select>
- 
-      <input type="text" placeholder="Número do cartão" maxlength="16" pattern="[0-9]*">
-      <input type="text" placeholder="Nome no cartão">
-      <input type="text" placeholder="Validade (MM/AA)" maxlength="5">
-      <input type="text" placeholder="CVV" maxlength="3" pattern="[0-9]*">
- 
-      <button onclick="finalizarTudo()">Pagar</button>
-    </div>
- 
-    <!-- DINHEIRO -->
-    <div id="area-dinheiro" class="area-pagamento">
-      <p>Pagamento em dinheiro na entrega</p>
-      <button onclick="finalizarTudo()">Confirmar Pedido</button>
-    </div>
- 
-  </div>
-</div>
- 
-<!-- Finalização -->
-<div class="overlay" id="popupFinalizado">
-<div class="popup-form">
-  <h2>Pedido Finalizado 🎉</h2>
-  <p>Seu pedido foi enviado com sucesso!</p>
-  <p>Entraremos em contato por telefone ou e-mail.</p>
- 
-  <button onclick="fecharFinalizado()">Fechar</button>
-</div>
-</div>
-
-<form id="formFinal" method="POST" action="salvar_tudo.php" style="display:none;">
-    
-    <input name="nome" id="final_nome">
-    <input name="email" id="final_email">
-    <input name="senha" id="final_senha">
-    <input name="telefone" id="final_telefone">
-    
-    <input name="cep" id="final_cep">
-    <input name="rua" id="final_rua">
-    <input name="numero" id="final_numero">
-    <input name="bairro" id="final_bairro">
-    <input name="cidade" id="final_cidade">
-    <input name="estado" id="final_estado">
-    
-    <input name="pagamento" id="final_pagamento">
-    
-</form>
-<script>
-    let usuarioLogado = false;
-    let carrinho = [];
-    let contador = 0;
-    const precos = {
-      Yakult: 19.9,
-      Tradicional: 18.9,
-      Frozen: 23.9,
-    };
- 
-    function adicionarAoCarrinho(produto) {
-      carrinho.push(produto);
-      atualizarCarrinho();
-    }
- 
-    function removerItem(index) {
-      carrinho.splice(index, 1);
-      atualizarCarrinho();
-    }
- 
-    function atualizarCarrinho() {
-      const lista = document.getElementById("lista-carrinho");
-      const contadorSpan = document.getElementById("contador-carrinho");
-      const vazio = document.getElementById("carrinho-vazio");
-      const totalSpan = document.getElementById("valor-total");
- 
-      lista.innerHTML = "";
-      let total = 0;
- 
-      carrinho.forEach((item, index) => {
-        const li = document.createElement("li");
-        const categoria = item.split(" - ")[0];
-        total += precos[categoria] || 0;
-        li.innerHTML = `${item} <button onclick="removerItem(${index})" style="margin-left:10px; color:red; background:none; border:none; cursor:pointer">remover</button>`;
-        lista.appendChild(li);
-      });
- 
-      contador = carrinho.length;
-      contadorSpan.textContent = contador;
- 
-      if (carrinho.length === 0) {
-    vazio.style.display = "block";
-            totalSpan.textContent = "";
-        } else {
-    vazio.style.display = "none";
-        totalSpan.textContent = `Total: R$ ${total.toFixed(2).replace(".", ",")}`;
-      }
-    }
- 
-    function abrirCarrinho() {
-      document.getElementById("carrinhoOverlay").style.display = "flex";
-    }
- 
-    function fecharCarrinho() {
-      document.getElementById("carrinhoOverlay").style.display = "none";
-    }
- 
-
-
-    function abrirConfirmarPedido() {
-        const lista = document.getElementById("resumo-pedido");
-        const totalSpan = document.getElementById("total-confirmar");
-    
-        lista.innerHTML = "";
-        let total = 0;
-        carrinho.forEach(item => {
-            const li = document.createElement("li");
-            li.textContent = item;
-            const categoria = item.split(" - ")[0];
-            total += precos[categoria] || 0;
-            lista.appendChild(li);
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const popup = urlParams.get('popup');
+            if (popup === 'finalizar-pedido') {
+                finalizarCompra();
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         });
-        totalSpan.textContent = "Total: R$ " + total.toFixed(2).replace(".", ",");
-        document.getElementById("popupConfirmar").style.display = "flex";
-    }
-    function fecharConfirmar() {
-        document.getElementById("popupConfirmar").style.display = "none";
-    }
 
-    function finalizarCompra() {
-        if (carrinho.length === 0) {
-            alert("Carrinho vazio!");
-            return;
+        // ======================== PERSISTÊNCIA DO CARRINHO ========================
+        function salvarCarrinho() {
+            sessionStorage.setItem('carrinho', JSON.stringify(carrinho));
         }
-        if (!usuarioLogado) {
-            abrirPopupCadastro();
-        } else {
-            abrirConfirmarPedido();
+
+        function carregarCarrinho() {
+            const saved = sessionStorage.getItem('carrinho');
+            if (saved) {
+                carrinho = JSON.parse(saved);
+                atualizarCarrinho();
+            }
         }
-    }
-    
-    let tipoConsumo = "";
-    function irParaConsumo() {
-        fecharConfirmar();
-        document.getElementById("popupConsumo").style.display = "flex";
-    }
-    
-    function fecharConsumo() {
-        document.getElementById("popupConsumo").style.display = "none";
-    }
 
-// forma de consumo 
-function selecionarConsumo(tipo) {
-tipoConsumo = tipo;
-fecharConsumo();
- 
-if (tipo === "delivery") {
-  document.getElementById("popupEndereco").style.display = "flex";
-} else {
-  gerarCodigo();
-  document.getElementById("popupPagamento").style.display = "flex";
-}
-}
- 
-// Endereço
- 
-function fecharEndereco() {
-document.getElementById("popupEndereco").style.display = "none";
-}
- 
-function salvarEndereco(event) {
-event.preventDefault();
- 
-alert("Endereço salvo!");
-fecharEndereco();
- 
-document.getElementById("popupPagamento").style.display = "flex";
-}
+        // ======================== FUNÇÕES DO CARRINHO ========================
+        function adicionarAoCarrinho(nome, id, preco) {
+            carrinho.push({ nome: nome, id: id, preco: preco });
+            atualizarCarrinho();
+            salvarCarrinho();
+        }
 
-function buscarCEP() {
-    let cep = document.getElementById("cep").value;
- 
-    if (cep.length !== 8) {
-        alert("CEP inválido");
-        return;
-    }
- 
-    fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then(res => res.json())
-        .then(dados => {
- 
-            if (dados.erro) {
-                alert("CEP não encontrado");
+        function removerItem(index) {
+            carrinho.splice(index, 1);
+            atualizarCarrinho();
+            salvarCarrinho();
+        }
+
+        function atualizarCarrinho() {
+            const lista = document.getElementById("lista-carrinho");
+            const contadorSpan = document.getElementById("contador-carrinho");
+            const vazio = document.getElementById("carrinho-vazio");
+            const totalSpan = document.getElementById("valor-total");
+            lista.innerHTML = "";
+            let total = 0;
+            carrinho.forEach((item, idx) => {
+                total += item.preco;
+                const li = document.createElement("li");
+                li.innerHTML = `${item.nome} - R$ ${item.preco.toFixed(2)} <button onclick="removerItem(${idx})" style="margin-left:10px; color:red; background:none; border:none; cursor:pointer">remover</button>`;
+                lista.appendChild(li);
+            });
+            contadorSpan.textContent = carrinho.length;
+            if (carrinho.length === 0) {
+                vazio.style.display = "block";
+                totalSpan.textContent = "";
+                totalSpan.removeAttribute('data-total');
+            } else {
+                vazio.style.display = "none";
+                totalSpan.textContent = `Total: R$ ${total.toFixed(2)}`;
+                totalSpan.setAttribute('data-total', total.toFixed(2));
+            }
+        }
+
+        function abrirCarrinho() { document.getElementById("carrinhoOverlay").style.display = "flex"; }
+        function fecharCarrinho() { document.getElementById("carrinhoOverlay").style.display = "none"; }
+
+        // ======================== FLUXO DE PEDIDO ========================
+        function finalizarCompra() {
+            if (carrinho.length === 0) { alert("Carrinho vazio!"); return; }
+            if (!usuarioLogado) {
+                abrirPopupCadastro();
+            } else {
+                abrirConfirmarPedido();
+            }
+        }
+
+        function abrirConfirmarPedido() {
+            const lista = document.getElementById("resumo-pedido");
+            const totalSpan = document.getElementById("total-confirmar");
+            lista.innerHTML = "";
+            let total = 0;
+            carrinho.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = `${item.nome} - R$ ${item.preco.toFixed(2)}`;
+                lista.appendChild(li);
+                total += item.preco;
+            });
+            totalSpan.textContent = "Total: R$ " + total.toFixed(2);
+            document.getElementById("popupConfirmar").style.display = "flex";
+        }
+        function fecharConfirmar() { document.getElementById("popupConfirmar").style.display = "none"; }
+
+        function irParaConsumo() { fecharConfirmar(); document.getElementById("popupConsumo").style.display = "flex"; }
+        function fecharConsumo() { document.getElementById("popupConsumo").style.display = "none"; }
+
+        function selecionarConsumo(tipo) {
+            tipoConsumo = tipo;
+            fecharConsumo();
+            if (tipo === "delivery") {
+                document.getElementById("popupEndereco").style.display = "flex";
+            } else {
+                // Consumo local ou viagem: não precisa de endereço
+                document.getElementById("popupPagamento").style.display = "flex";
+            }
+        }
+
+        // ======================== ENDEREÇO (SEM RECARREGAR) ========================
+        function fecharEndereco() { document.getElementById("popupEndereco").style.display = "none"; }
+
+        function capturarEndereco() {
+            const cep = document.getElementById('cep').value.trim();
+            const rua = document.getElementById('rua').value.trim();
+            const numero = document.getElementById('numero').value.trim();
+            const bairro = document.getElementById('bairro').value.trim();
+            const cidade = document.getElementById('cidade').value.trim();
+            const estado = document.getElementById('estado').value.trim();
+            if (!cep || !rua || !numero || !bairro || !cidade || !estado) {
+                alert("Preencha todos os campos do endereço.");
+                return false;
+            }
+            enderecoSelecionado = { cep, rua, numero, bairro, cidade, estado };
+            return true;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const formEndereco = document.getElementById("form-endereco");
+            if (formEndereco) {
+                formEndereco.addEventListener("submit", function(e) {
+                    e.preventDefault();
+                    if (capturarEndereco()) {
+                        const formData = new FormData(formEndereco);
+                        formData.append('action', 'save');
+                        
+                        fetch('formEndereco.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                fecharEndereco();
+                                document.getElementById("popupPagamento").style.display = "flex";
+                            } else {
+                                alert("Erro ao salvar endereço.");
+                            }
+                        })
+                        .catch(erro => {
+                            console.error(erro);
+                            alert("Erro de conexão.");
+                        });
+                    }
+                });
+            }
+        });
+
+        function buscarCEP() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep.length !== 8) { alert('CEP inválido. Informe os 8 dígitos.'); return; }
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) { alert('CEP não encontrado.'); return; }
+                    document.getElementById('rua').value = data.logradouro || '';
+                    document.getElementById('bairro').value = data.bairro || '';
+                    document.getElementById('cidade').value = data.localidade || '';
+                    document.getElementById('estado').value = data.uf || '';
+                    document.getElementById('cep').value = cep;
+                })
+                .catch(error => { alert('Erro ao buscar o CEP.'); });
+        }
+
+        function usarEnderecoSalvo() {
+            const container = document.querySelector('.endereco-buttons');
+            if (!container) return;
+            document.getElementById('cep').value = container.dataset.cep || '';
+            document.getElementById('rua').value = container.dataset.rua || '';
+            document.getElementById('numero').value = container.dataset.numero || '';
+            document.getElementById('bairro').value = container.dataset.bairro || '';
+            document.getElementById('cidade').value = container.dataset.cidade || '';
+            document.getElementById('estado').value = container.dataset.estado || '';
+            document.getElementById('endereco_id').value = container.dataset.id || '';
+            document.getElementById('action').value = 'save';
+            document.getElementById('submit-btn').textContent = 'Continuar para Pagamento';
+            alert('Endereço Selecionado com Sucesso!');
+        }
+
+        function editarEnderecoSalvo() {
+            const container = document.querySelector('.endereco-buttons');
+            if (!container) return;
+            document.getElementById('cep').value = container.dataset.cep || '';
+            document.getElementById('rua').value = container.dataset.rua || '';
+            document.getElementById('numero').value = container.dataset.numero || '';
+            document.getElementById('bairro').value = container.dataset.bairro || '';
+            document.getElementById('cidade').value = container.dataset.cidade || '';
+            document.getElementById('estado').value = container.dataset.estado || '';
+            document.getElementById('endereco_id').value = container.dataset.id || '';
+            document.getElementById('action').value = 'save';
+            document.getElementById('submit-btn').textContent = 'Atualizar Endereço';
+        }
+
+        function excluirEndereco(id) {
+            if (confirm('Tem certeza que deseja excluir este endereço?')) {
+                const formData = new FormData();
+                formData.append('action', 'delete');
+                formData.append('endereco_id', id);
+                fetch('formEndereco.php', { method: 'POST', body: formData }).then(response => {
+                    if (response.ok) window.location.reload();
+                    else alert('Erro ao excluir endereço.');
+                });
+            }
+        }
+
+        // ======================== PAGAMENTO ========================
+        function fecharPagamento() { document.getElementById("popupPagamento").style.display = "none"; }
+
+        function selecionarPagamento(tipo) {
+            metodoPagamento = tipo;
+            document.getElementById("area-pix").style.display = "none";
+            document.getElementById("area-cartao").style.display = "none";
+            document.getElementById("area-dinheiro").style.display = "none";
+            if (tipo === "pix") {
+                document.getElementById("area-pix").style.display = "block";
+                const totalElem = document.getElementById("valor-total");
+                const valor = totalElem.getAttribute('data-total') || "0";
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Pagamento-PoppingTea-${valor}`;
+                document.getElementById("qrcode-pix").src = qrUrl;
+            } else if (tipo === "cartao") {
+                document.getElementById("area-cartao").style.display = "block";
+            } else if (tipo === "dinheiro") {
+                document.getElementById("area-dinheiro").style.display = "block";
+            }
+        }
+
+        function finalizarPedido() {
+            if (!metodoPagamento) {
+                alert("Selecione uma forma de pagamento.");
                 return;
             }
- 
-            document.getElementById("rua").value = dados.logradouro;
-            document.getElementById("bairro").value = dados.bairro;
-            document.getElementById("cidade").value = dados.localidade;
-            document.getElementById("estado").value = dados.uf;
-        })
-        .catch(() => {
-            alert("Erro ao buscar CEP");
-        });
-}
- 
-// Forma de pagamento
-function fecharPagamento() {
-  document.getElementById("popupPagamento").style.display = "none";
-}
- 
-// CONTROLE TOTAL DOS MÉTODOS
-function selecionarPagamento(tipo) {
- 
-  document.getElementById("area-pix").style.display = "none";
-  document.getElementById("area-cartao").style.display = "none";
-  document.getElementById("area-dinheiro").style.display = "none";
-
- 
-  // PIX
-  if (tipo === "pix") {
-    document.getElementById("area-pix").style.display = "block";
- 
-    const valor = document.getElementById("valor-total").textContent;
- 
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Pagamento-PoppingTea-${valor}`;
- 
-    document.getElementById("qrcode-pix").src = qrUrl;
-  }
- 
-  // CARTÃO
-  if (tipo === "cartao") {
-    document.getElementById("area-cartao").style.display = "block";
-  }
- 
-  // DINHEIRO
-  if (tipo === "dinheiro") {
-    document.getElementById("area-dinheiro").style.display = "block";
-  }
-
-  let pagamentoSelecionado = "";
- 
-function selecionarPagamento(tipo){
-    pagamentoSelecionado = tipo;
-}
-}
- 
-function fecharFinalizado() {
-document.getElementById("popupFinalizado").style.display = "none";
-}
- 
-// extra
- 
-function gerarCodigo() {
-const codigo = Math.floor(1000 + Math.random() * 9000);
-alert("Seu código: " + codigo + " (mostre no balcão)");
-}
-
-    // ingredientes (em popups)
-    function mostrarIngredientes(produtoId) {
-      const ingredientes = {
-        "yakult-pessego": "Yakult, chá branco, polpa de pêssego. Sem glúten.",
-        "yakult-cramberry": "Yakult, chá verde, morango, framboesa, cereja, amora e mirtilo. Sem glúten.",
-        "yakult-morango": "Yakult, chá branco, morango natural. Contém lactose.",
-        "yakult-maca": "Yakult, maçã verde, chá verde. Sem glúten.",
-        "tradicional-taiwan": "Chá preto, leite vegetal, perolas. Sem glúten.",
-        "tradicional-tiger": "Mate, caramelo, pérolas. Pode conter traços de glúten.",
-        "tradicional-vanilla": "Mate, baunilha, leite vegetal. Sem glúten.",
-        "frozen-nutty": "Creme, caramelo, amendoim. Contém glúten.",
-        "frozen-oreo": "Chocolate branco, Oreo, leite. Contém glúten e lactose.",
-        "frozen-cafe": "Café expresso, Oreo, leite. Contém glúten.",
-      };
-      const texto = ingredientes[produtoId] || "Ingredientes não encontrados.";
-      document.getElementById("texto-ingredientes").textContent = texto;
-      document.getElementById("popupIngredientes").style.display = "flex";
-    }
- 
-    function fecharIngredientes() {
-      document.getElementById("popupIngredientes").style.display = "none";
-    }
-    function gerarQRCode() {
-        const area = document.getElementById("qrcode");
-        area.innerHTML = "";
-        new QRCode(area, {
-            text: "Pagamento Popping Tea - R$ XX,XX",
-            width: 150,
-            height: 150
-        });
-    }
-    
-    document.addEventListener("DOMContentLoaded", function() {
-        if (sessionStorage.getItem('abrirPopupConfirmarPedido') === 'true') {
-            const popupConfirmar = document.getElementById("popupConfirmar");
-            if (popupConfirmar) {
-                popupConfirmar.style.display = "flex";
+            const total = document.getElementById("valor-total").getAttribute('data-total');
+            if (!total || total === "0") {
+                alert("Carrinho vazio ou total inválido.");
+                return;
             }
-            sessionStorage.removeItem('abrirPopupConfirmarPedido');
-        }
-    });
 
-  </script>
+            const pedido = {
+                cliente_id: <?= $_SESSION['usuario_id'] ?? 0 ?>,
+                itens: carrinho,
+                total: total,
+                tipo_consumo: tipoConsumo,
+                endereco: enderecoSelecionado,
+                pagamento: metodoPagamento
+            };
+
+            fetch("salvar_pedido.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pedido)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    document.getElementById("popupPagamento").style.display = "none";
+                    document.getElementById("popupFinalizado").style.display = "flex";
+                    carrinho = [];
+                    atualizarCarrinho();
+                    salvarCarrinho();
+                    // Limpa dados do pedido
+                    tipoConsumo = "";
+                    metodoPagamento = "";
+                    enderecoSelecionado = null;
+                } else {
+                    alert("Erro ao finalizar pedido: " + data.mensagem);
+                }
+            })
+            .catch(erro => {
+                console.error(erro);
+                alert("Erro de conexão. Tente novamente.");
+            });
+        }
+
+        function fecharFinalizado() {
+            document.getElementById("popupFinalizado").style.display = "none";
+            // Opcional: redirecionar para index ou limpar URL
+            // window.location.href = "index.php";
+        }
+
+        function gerarCodigo() {
+            const codigo = Math.floor(1000 + Math.random() * 9000);
+            alert("Seu código: " + codigo + " (mostre no balcão)");
+        }
+
+        function mostrarIngredientes(produtoId) {
+            const ingredientes = {
+                "yakult-pessego": "Yakult, chá branco, polpa de pêssego. Sem glúten.",
+                "yakult-cramberry": "Yakult, chá verde, morango, framboesa, cereja, amora e mirtilo. Sem glúten.",
+                "yakult-morango": "Yakult, chá branco, morango natural. Contém lactose.",
+                "yakult-maca": "Yakult, maçã verde, chá verde. Sem glúten.",
+                "tradicional-taiwan": "Chá preto, leite vegetal, perolas. Sem glúten.",
+                "tradicional-tiger": "Mate, caramelo, pérolas. Pode conter traços de glúten.",
+                "tradicional-vanilla": "Mate, baunilha, leite vegetal. Sem glúten.",
+                "frozen-nutty": "Creme, caramelo, amendoim. Contém glúten.",
+                "frozen-oreo": "Chocolate branco, Oreo, leite. Contém glúten e lactose.",
+                "frozen-cafe": "Café expresso, Oreo, leite. Contém glúten.",
+            };
+            document.getElementById("texto-ingredientes").textContent = ingredientes[produtoId] || "Ingredientes não encontrados.";
+            document.getElementById("popupIngredientes").style.display = "flex";
+        }
+        function fecharIngredientes() { document.getElementById("popupIngredientes").style.display = "none"; }
+
+        // Detectar redirecionamento vindo de formEndereco.php (caso ainda exista)
+        document.addEventListener("DOMContentLoaded", function() {
+            carregarCarrinho();
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('endereco') === 'ok' || urlParams.get('pagamento') === 'ok') {
+                // Se o usuário foi redirecionado de volta, abre o pagamento
+                document.getElementById("popupPagamento").style.display = "flex";
+                // Limpa os parâmetros da URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            // Esconde logout se não logado
+            const logoutBtn = document.querySelector(".logout");
+            if (logoutBtn) logoutBtn.style.display = usuarioLogado ? "flex" : "none";
+        });
+    </script>
+    <script src="login-cadastro.js"></script>
 </body>
 </html>

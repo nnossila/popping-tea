@@ -53,9 +53,28 @@ nav a.active {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
+.login {
+  display: flex;
+}
+.login a {
+  text-decoration: none;
+  color: #2e2e2e;
+  font-weight: 500;
+  font-size: 1.05rem;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.login a:hover {
+  color: #008d00;
+  text-decoration: none;
+}
+
+.logout {
+  display: none;
+}
 .logout a {
   text-decoration: none;
   color: #af1717;
@@ -460,6 +479,63 @@ nav a.active {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* ------------------- Endereço ------------------- */
+.endereco-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+ 
+.endereco-item span:first-child {
+    flex: 1;
+}
+ 
+.icone-editar, .icone-excluir {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+ 
+.endereco-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 16px;
+    background: #f3ede5;
+    margin-bottom: 16px;
+}
+ 
+.endereco-btn {
+    flex: 1;
+    min-width: 90px;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 14px;
+    background: #cfa585;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+ 
+.endereco-btn:hover {
+    background: #b98567;
+}
+ 
+.endereco-btn-delete {
+    background: #e05f57;
+}
+ 
+.endereco-btn-delete:hover {
+    background: #c74237;
 }
 
 .area-pagamento {

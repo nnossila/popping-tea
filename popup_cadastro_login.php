@@ -3,14 +3,6 @@
   <div class="popup-form">
     <button class="fechar" onclick="fecharCadastro()">×</button>
     <h2>Cadastro</h2>
-    <?php
-    if (isset($_SESSION['resultado_cadastro'])) {
-        $res = $_SESSION['resultado_cadastro'];
-        $classe = $res->sucesso ? 'sucesso' : 'erro';
-        echo "<div class='$classe'>{$res->mensagem}</div>";
-        unset($_SESSION['resultado_cadastro']);
-    }
-    ?>
     <form method="POST" action="formCadastro.php" onsubmit="finalizarCadastro(event)">
       <input type="text" placeholder="Nome" name="nome" id="nome" required />
       <input type="email" placeholder="E-mail" name="email" id="email" required />
@@ -38,7 +30,6 @@
     <button class="fechar" onclick="fecharLogin()">×</button>
     <h2>Login</h2>
     <form onsubmit="fazerLogin(event)" method="POST">
-      <input type="text" placeholder="Nome" pattern="[A-Za-zÀ-ú\s]+" name="nome" required />
       <input type="email" placeholder="E-mail" name="email" required />
       <input type="password" placeholder="Senha (Letras, números e símbolos.)" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{6,}$" name="senha" required />
       <button type="submit">Entrar</button>

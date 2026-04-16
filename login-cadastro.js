@@ -1,8 +1,17 @@
+const logoutBtn = document.querySelector(".logout"); 
+const loginBtn = document.querySelector(".login"); 
+if (logoutBtn) {
+    logoutBtn.style.display = usuarioLogado ? "flex" : "none";
+}
+if (loginBtn) {
+    loginBtn.style.display = usuarioLogado ? "none" : "flex";
+}
+
 function abrirPopupCadastro() {
     if (!usuarioLogado) {
         document.getElementById("popupCadastro").style.display = "flex";
     } else {
-        window.location.href = 'menu.php';
+        window.location.href = 'menu.php?popup=finalizar-pedido';
     }
 }
 
